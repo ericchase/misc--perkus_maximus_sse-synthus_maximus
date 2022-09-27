@@ -17,13 +17,13 @@ namespace SynthusMaximus.Patchers
         protected override void RunPatcherInner()
         {
             var isMage = (GlobalShort)Patch.Globals.GetOrAddAsOverride(xMAIsPerMaMageRunning.Resolve(State.LinkCache));
-            isMage.Data = Storage.UseMage ? 1 : 0;
+            isMage.Data = (short) (Storage.UseMage ? 1 : 0);
             
             var isWarrior = (GlobalShort)Patch.Globals.GetOrAddAsOverride(xMAIsPerMaWarriorRunning.Resolve(State.LinkCache));
-            isWarrior.Data = Storage.UseWarrior ? 1 : 0;
+            isWarrior.Data = (short) (Storage.UseWarrior ? 1 : 0);
             
             var isThief = (GlobalShort)Patch.Globals.GetOrAddAsOverride(xMAIsPerMaThiefRunning.Resolve(State.LinkCache));
-            isThief.Data = Storage.UseThief ? 1 : 0;
+            isThief.Data = (short) (Storage.UseThief ? 1 : 0);
         }
     }
 }
