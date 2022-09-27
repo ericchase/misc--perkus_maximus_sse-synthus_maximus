@@ -23,22 +23,18 @@ namespace SynthusMaximus
 {
     public class Program
     {
-        public static Action<ILoggingBuilder>? AddLogger = null;
+        private static Action<ILoggingBuilder>? addLogger = null;
+        public static Action<ILoggingBuilder>? AddLogger { get => addLogger; set => addLogger = value; }
+
         public static async Task<int> Main(string[] args)
         {
-            return await SynthesisPipeline.Instance.AddPatch<ISkyrimMod, ISkyrimModGetter>(RunPatch)
-                .Run(args, new RunPreferences()
-            {
-                ActionsForEmptyArgs = new RunDefaultPatcher()
-                {
-                    IdentifyingModKey = "SynthusMaximus.esp",
-                    TargetRelease = GameRelease.SkyrimSE,
-                }
-            });
+            return await SynthesisPipeline.Instance
+                .AddPatch<ISkyrimMod, ISkyrimModGetter>(RunPatch)
+                .SetTypicalOpen(GameRelease.SkyrimSE, "SynthusMaximus.esp")
+                .Run(args);
         }
 
-
-        public static async Task RunPatch(IPatcherState<ISkyrimMod, ISkyrimModGetter> state)
+        public static Task RunPatch(IPatcherState<ISkyrimMod, ISkyrimModGetter> state)
         {
             var host = Host.CreateDefaultBuilder(Array.Empty<string>())
                 .ConfigureAppConfiguration((hostingContext, configuration) =>
@@ -52,7 +48,7 @@ namespace SynthusMaximus
 
             var runner = host.Services.GetService<PatcherRunner>();
             runner!.RunPatchers();
-
+            return Task.CompletedTask;
         }
 
         private static void ConfigureServices(IServiceCollection collection, IPatcherState<ISkyrimMod, ISkyrimModGetter> state)
@@ -63,7 +59,7 @@ namespace SynthusMaximus
                 logging.ClearProviders();
                 if (AddLogger != null)
                     AddLogger(logging);
-                else 
+                else
                     logging.AddConsole();
             });
             collection.AddTransient<OverlayLoader>();
