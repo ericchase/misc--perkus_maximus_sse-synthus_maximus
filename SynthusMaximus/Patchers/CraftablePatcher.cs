@@ -34,7 +34,7 @@ namespace SynthusMaximus.Patchers
         {
             foreach (var (c, resolved) in _armorWeaponRecipes.Value)
             {
-                if (Storage.UseMage && c.WorkbenchKeyword.FormKey == DLC2StaffEnchanter.FormKey 
+                if (Storage.UseMage && c.WorkbenchKeyword.FormKey == DLC2StaffEnchanter.FormKey
                                     && resolved is IWeaponGetter wg
                                     && Storage.StaffCraftingDisableCraftingExclusions.IsExcluded(wg))
                 {
@@ -55,8 +55,6 @@ namespace SynthusMaximus.Patchers
                     }
                 }
             }
-            
-            
         }
 
         private void AlterTemperingRecipe(IConstructibleObjectGetter c, IWeaponGetter w)
@@ -66,14 +64,17 @@ namespace SynthusMaximus.Patchers
                 return;
 
             var perk = wm.Type.Data?.SmithingPerk;
-            if (perk != null)
+            var co = Patch.ConstructibleObjects.GetOrAddAsOverride(c);
+            co.Conditions.Clear();
+
+            if (perk == null) { }
+            else if (perk.IsNull) { }
+            else
             {
-                var co = Patch.ConstructibleObjects.GetOrAddAsOverride(c);
-                co.Conditions.Clear();
                 co.AddCraftingPerkCondition(perk);
             }
         }
-        
+
         private void AlterTemperingRecipe(IConstructibleObjectGetter c, IArmorGetter a)
         {
             var am = Storage.GetArmorMaterial(a);
@@ -81,10 +82,13 @@ namespace SynthusMaximus.Patchers
                 return;
 
             var perk = am.Type.Data?.SmithingPerk;
-            if (perk != null)
+            var co = Patch.ConstructibleObjects.GetOrAddAsOverride(c);
+            co.Conditions.Clear();
+
+            if (perk == null) { }
+            else if (perk.IsNull) { }
+            else
             {
-                var co = Patch.ConstructibleObjects.GetOrAddAsOverride(c);
-                co.Conditions.Clear();
                 co.AddCraftingPerkCondition(perk);
             }
         }
@@ -93,7 +97,6 @@ namespace SynthusMaximus.Patchers
         {
             var co = Patch.ConstructibleObjects.GetOrAddAsOverride(c);
             co.WorkbenchKeyword.SetTo(ActorTypeNPC);
-            
         }
     }
 }
